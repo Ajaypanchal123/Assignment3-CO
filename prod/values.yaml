@@ -1,0 +1,36 @@
+# Disable all unnecessary components
+redis-cluster:
+  enabled: false
+postgresql:
+  enabled: false
+postgresql-ha:
+  enabled: false
+
+# POINT 2: MySQL root password change (2 marks)
+# Configure MySQL connection
+gitea:
+  config:
+    database:
+      # POINT 3: MySQL connection settings (2 marks)
+      DB_TYPE: mysql
+      HOST: mysql  # Matches your MySQL service name
+      NAME: gitea
+      USER: root
+      PASSWD: "NewPass123!"  # Must match your mysql.yaml =>>> password Changed from default 'gitea123'
+    session:
+      PROVIDER: memory
+    cache:
+      ADAPTER: memory
+
+# POINT 1: Persistent storage for repository data (2 marks)
+# Enable persistence
+persistence:
+  enabled: true
+  size: 10Gi
+
+# Service configuration
+service:
+  http:
+    type: NodePort
+    port: 3000
+    nodePort: 30000

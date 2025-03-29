@@ -1,11 +1,30 @@
 ---
 - hosts: localhost
   tasks:
-  - name: remove mysql
-    kubernetes.core.k8s:
-      state: absent
-      src: mysql.yaml
-  - name: "remove kubernetes python package"
-    pip:
-      name: kubernetes
-      state: absent
+    - name: "Uninstall Gitea Helm release"
+      kubernetes.core.helm:
+        name: gitea
+        release_namespace: default
+        state: absent
+        wait: true
+
+    - name: "Remove MySQL deployment"
+      kubernetes.core.k8s:
+        state: absent
+        src: mysql.yaml
+
+    - name: "Clean up persistent volumes"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: PersistentVolume
+        name: mysql-pv-volume
+
+    - name: "Remove python packages"
+      pip:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - kubernetes
+        - ansible.posix
+        - community.kubernetes
