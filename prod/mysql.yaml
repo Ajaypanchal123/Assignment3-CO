@@ -45,7 +45,7 @@ spec:
           value: gitea123
           # POINT 3: Dedicated MySQL service for Gitea (2 marks)
         - name: MYSQL_DATABASE
-          value: gitea
+          value: "NewPass123!"
         ports:
         - containerPort: 3306
         # POINT 1: Persistent volume for MySQL (2 marks)
