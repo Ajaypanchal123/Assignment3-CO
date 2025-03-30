@@ -21,6 +21,10 @@ gitea:
       PROVIDER: memory
     cache:
       ADAPTER: memory
+  admin:  # <-- Add this block
+    username: root
+    password: "Ajay@123456"
+    email: "panchalajay018@gmail.com"
 
 # POINT 1: Persistent storage for repository data (2 marks)
 # Enable persistence
@@ -35,3 +39,4 @@ service:
     port: 3000
     targetPort: 3000
     nodePort: 30001
+    

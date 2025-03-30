@@ -1,58 +1,58 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mysql-pv-volume
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: mysql-pv-volume
+  spec:
+    storageClassName: manual
+    capacity:
       storage: 20Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mysql
-spec:
-  selector:
-    matchLabels:
-      app: mysql
-  template:
-    metadata:
-      labels:
+    accessModes:
+      - ReadWriteOnce
+    hostPath:
+      path: "/mnt/data"
+  ---
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: mysql-pv-claim
+  spec:
+    storageClassName: manual
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 20Gi
+  ---
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: mysql
+  spec:
+    selector:
+      matchLabels:
         app: mysql
-    spec:
-      containers:
-      - name: mysql
-        image: mysql:5.7
-        # POINT 2: MySQL password configuration (2 marks)
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: gitea123
-          # POINT 3: Dedicated MySQL service for Gitea (2 marks)
-        - name: MYSQL_DATABASE
-          value: "NewPass123!"
-        ports:
-        - containerPort: 3306
-        # POINT 1: Persistent volume for MySQL (2 marks)
-        volumeMounts:
+    template:
+      metadata:
+        labels:
+          app: mysql
+      spec:
+        containers:
+        - name: mysql
+          image: mysql:5.7
+          # POINT 2: MySQL password configuration (2 marks)
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: gitea123
+            # POINT 3: Dedicated MySQL service for Gitea (2 marks)
+          - name: MYSQL_DATABASE
+            value: "NewPass123!"
+          ports:
+          - containerPort: 3306
+          # POINT 1: Persistent volume for MySQL (2 marks)
+          volumeMounts:
+          - name: mysql-storage
+            mountPath: /var/lib/mysql
+        volumes:
         - name: mysql-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim

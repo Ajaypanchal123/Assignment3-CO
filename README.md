@@ -1,3 +1,4 @@
+HEAD
 # cdevops-gitea
 k8s gitea lab to take dev (sqlite based) to prod (mysql based)
 
@@ -59,3 +60,7 @@ The challenge is to run this in production mode from a prod folder at the same l
 |make sure that your instance is running for marking and submit a link to the repository from the previous step|1|
 |||
 |total|10|
+# assignment-submission
+
+CO Assignment 3 - Gitea Deployment
+7d28cbec58d389b110b6dc5ddd5db92a06bca8d5
