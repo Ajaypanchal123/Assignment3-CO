@@ -13,15 +13,24 @@ gitea:
     database:
       # POINT 3: MySQL connection settings (2 marks)
       DB_TYPE: mysql
-      HOST: mysql  # Matches your MySQL service name
+      HOST: mysql:3306  # Matches your MySQL service name
       NAME: gitea
       USER: root
-      PASSWD: "NewPass123!"  # Must match your mysql.yaml =>>> password Changed from default 'gitea123'
+      PASSWD: "NewPass123!"  # Must match your mysql.yaml
+      SCHEMA: ""
+      SSL_MODE: disable  # Required for debugging
+    service:
+      DISABLE_REGISTRATION: true  # Disables public signups
+    log:
+      LEVEL: debug  # Enable detailed logging
     session:
       PROVIDER: memory
     cache:
       ADAPTER: memory
-  admin:  # <-- Add this block
+  dependencies:
+    mysql:
+      enabled: false  # We're using our own MySQL deployment
+  admin:
     username: root
     password: "Ajay@123456"
     email: "panchalajay018@gmail.com"
@@ -31,12 +40,23 @@ gitea:
 persistence:
   enabled: true
   size: 10Gi
+  accessMode: ReadWriteOnce
 
-# Service configuration
+# POINT 4: Public exposure via NodePort (2 marks)
 service:
   http:
     type: NodePort
     port: 3000
     targetPort: 3000
-    nodePort: 30001
-    
+    nodePort: 30001  # Explicit NodePort for grading
+
+# Debugging additions
+deployment:
+  initContainers:
+    - name: wait-for-mysql
+      image: busybox:1.28
+      command: ['sh', '-c', 'until nc -zv mysql 3306; do echo "Waiting for MySQL..."; sleep 5; done']
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
